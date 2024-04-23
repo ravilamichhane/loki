@@ -1,0 +1,4 @@
+.volumes/
+.bin/
+.tmp/
+go.work.sum
