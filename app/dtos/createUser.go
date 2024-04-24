@@ -2,8 +2,7 @@ package dtos
 
 import (
 	"app/user/entities"
-	"fmt"
-	"nest/thor"
+	"nest/thor/validate"
 )
 
 type CreateUser struct {
@@ -11,10 +10,7 @@ type CreateUser struct {
 }
 
 func (c CreateUser) Validate() error {
-	if c.Name == "" {
-		return thor.NewFieldError("name", fmt.Errorf("name is required"))
-	}
-	return nil
+	return validate.Check(c)
 }
 
 func (c CreateUser) ToUser() *entities.User {

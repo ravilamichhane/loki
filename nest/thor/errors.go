@@ -1,9 +1,7 @@
 package thor
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
 	"syscall"
 )
 
@@ -18,10 +16,10 @@ type trustedError struct {
 	Status int
 }
 
-func NewTrustedError(msg string, err error, status int) error {
+func NewTrustedError(err error, status int) error {
 	if err != nil {
 		return &trustedError{
-			fmt.Errorf("error: %s \n %s", msg, err.Error()),
+			err,
 			status}
 	}
 	return &trustedError{err, status}
@@ -80,21 +78,18 @@ type FieldError struct {
 
 type FieldErrors []FieldError
 
-func NewFieldError(field string, err error) error {
-	return FieldErrors{
-		{
-			Field: field,
-			Err:   err.Error(),
-		},
+func NewFieldError(field string, err error) FieldErrors {
+	var fe FieldErrors
+	if err != nil {
+		fe = append(fe, FieldError{field, err.Error()})
 	}
+
+	return fe
 }
 
 func (fe FieldErrors) Error() string {
-	d, err := json.Marshal(fe)
-	if err != nil {
-		return err.Error()
-	}
-	return string(d)
+
+	return "Validation Error"
 }
 
 func (fe FieldErrors) Fields() map[string]string {
@@ -106,14 +101,14 @@ func (fe FieldErrors) Fields() map[string]string {
 }
 
 func IsFieldErrors(err error) bool {
-	var fe FieldErrors
-	return errors.As(err, &fe)
+	_, ok := err.(FieldErrors)
+	return ok
 }
 
 func GetFieldErrors(err error) FieldErrors {
 	var fe FieldErrors
 	if !errors.As(err, &fe) {
-		return make(FieldErrors, 0)
+		return FieldErrors{}
 	}
 	return fe
 }

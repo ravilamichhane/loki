@@ -11,13 +11,12 @@ import (
 func ErrorMiddleware(h common.RouteHandler) common.RouteHandler {
 	return func(ctx common.HttpContext) error {
 		if err := h(ctx); err != nil {
-			ctx.GetLogger().Error(ctx.GetContext(), "message", "msg", err)
 			var er ErrorResponse
 			var status int
-
 			switch {
 
 			case IsFieldErrors(err):
+				log.Println("ErrorMiddleware", err)
 				er = ErrorResponse{
 					Error:  "Validation Error",
 					Fields: GetFieldErrors(err).Fields(),
@@ -25,12 +24,14 @@ func ErrorMiddleware(h common.RouteHandler) common.RouteHandler {
 				status = http.StatusBadRequest
 
 			case IsTrustedError(err):
+				log.Println("ErrorMiddleware", err)
 				status = GetTrustedError(err).Status
 				er = ErrorResponse{
 					Error: GetTrustedError(err).Error(),
 				}
 
 			default:
+				ctx.GetLogger().Error(ctx.GetContext(), "message", "msg", err)
 				status = http.StatusInternalServerError
 				if GetEnvBool("APP_DEBUG") {
 					er = ErrorResponse{

@@ -3,6 +3,7 @@ package thor
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"nest/common"
 	"net/http"
 	"time"
@@ -189,18 +190,18 @@ func (ctx Context) Decode(val any) error {
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(val); err != nil {
 		if err.Error() == "EOF" {
-			return NewTrustedError("RequestBody IS EMPTY", err, http.StatusBadRequest)
+			return NewTrustedError(fmt.Errorf("no Body Provided"), http.StatusBadRequest)
 		}
 
 		return NewTrustedError(
-			"Invalid Request Body",
-			err, http.StatusBadRequest)
+			fmt.Errorf("invalid JSON"),
+			http.StatusBadRequest)
 	}
 
 	if v, ok := val.(validator); ok {
 
 		if err := v.Validate(); err != nil {
-			return NewTrustedError("Validation Error", err, http.StatusBadRequest)
+			return err
 		}
 	}
 

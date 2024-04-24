@@ -2,6 +2,8 @@ package user
 
 import (
 	"app/dtos"
+	"fmt"
+	"log"
 	"nest/common"
 	"nest/thor"
 
@@ -46,7 +48,7 @@ func (u *UserController) FindOne(ctx common.HttpContext) error {
 	uid, err := uuid.FromBytes([]byte(id))
 
 	if err != nil {
-		return thor.NewTrustedError("Invalid UUID", err, 400)
+		return thor.NewTrustedError(fmt.Errorf("Invalid UUID"), 400)
 	}
 
 	user, err := u.UserService.GetUser(uid)
@@ -65,6 +67,8 @@ func (u *UserController) Create(ctx common.HttpContext) error {
 	var user dtos.CreateUser
 
 	if err := ctx.Decode(&user); err != nil {
+		val, ok := err.(thor.FieldErrors)
+		log.Println(val, ok, "Error Decoding User")
 		return err
 	}
 
