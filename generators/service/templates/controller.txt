@@ -1,0 +1,138 @@
+package {{.packageName}}
+
+import (
+	"{{.RootPath}}/{{.packageName}}/dtos"
+	"log"
+	"nest/common"
+	"nest/thor"
+)
+
+type {{.packageName}}Controller struct {
+	{{.packageName}}Service {{.packageName}}Service
+}
+
+func New{{.packageName}}Controller({{.packageName}}Service {{.packageName}}Service) *{{.packageName}}Controller {
+	return &{{.packageName}}Controller{
+		{{.packageName}}Service: {{.packageName}}Service,
+	}
+}
+
+func (u *{{.packageName}}Controller) Routes() []common.Route {
+	return []common.Route{
+		common.GET("/", u.FindAll),
+		common.GET("/{id}", u.FindOne),
+		common.POST("", u.Create),
+		common.PUT("/{id}", u.Update),
+		common.DELETE("/{id}", u.Delete),
+	}
+}
+
+func (u *{{.packageName}}Controller) FindAll(ctx common.HttpContext) error {
+	ctx.SetStatusCode(200)
+
+	{{.packageName}}s, err := u.{{.packageName}}Service.FindAll()
+
+	if err != nil {
+		return err
+	}
+
+	ctx.JSON(200, {{.packageName}}s)
+	return nil
+}
+
+func (u *{{.packageName}}Controller) FindOne(ctx common.HttpContext) error {
+	uid, err := ctx.GetUUIDParam("id")
+
+	if err != nil {
+		return err
+	}
+
+	{{.packageName}}, err := u.{{.packageName}}Service.FindOne(uid)
+
+	if err != nil {
+		return err
+	}
+
+	ctx.SetStatusCode(200)
+
+	ctx.JSON(200, {{.packageName}})
+	return nil
+}
+
+func (u *{{.packageName}}Controller) Create(ctx common.HttpContext) error {
+	var {{.packageName}} dtos.Create{{.packageName}}
+
+	if err := ctx.Decode(&{{.packageName}}); err != nil {
+		val, ok := err.(thor.FieldErrors)
+		log.Println(val, ok, "Error Decoding {{.packageName}}")
+		return err
+	}
+
+	if err := u.{{.packageName}}Service.Create({{.packageName}}.To{{.packageName}}()); err != nil {
+		return err
+	}
+
+	ctx.JSON(200, {{.packageName}})
+	return nil
+
+}
+
+func (u *{{.packageName}}Controller) Update(ctx common.HttpContext) error {
+	uid, err := ctx.GetUUIDParam("id")
+
+	if err != nil {
+		return err
+	}
+
+	{{.packageName}}, err := u.{{.packageName}}Service.FindOne(uid)
+
+	if err != nil {
+		return err
+	}
+
+	var update{{.packageName}} dtos.Update{{.packageName}}
+
+	if err := ctx.Decode(&update{{.packageName}}); err != nil {
+		return err
+	}
+	{{.packageName}} = update{{.packageName}}.To{{.packageName}}({{.packageName}})
+
+	if err = u.{{.packageName}}Service.Update({{.packageName}}); err != nil {
+		return err
+	}
+
+	ctx.JSON(200, {{.packageName}})
+	return nil
+}
+
+func (u *{{.packageName}}Controller) Delete(ctx common.HttpContext) error {
+	uid, err := ctx.GetUUIDParam("id")
+
+	if err != nil {
+		return err
+	}
+	err = u.{{.packageName}}Service.Delete(uid)
+
+	if err == nil {
+		ctx.JSON(200, struct {
+			Message string `json:"message"`
+		}{
+			Message: "{{.packageName}} Deleted",
+		})
+	}
+
+	return err
+
+}
+
+func (u *{{.packageName}}Controller) Prefix() string {
+	return "/api/v1/{{.packageName}}"
+}
+
+func (u *{{.packageName}}Controller) Middlewares() []common.MiddleWare {
+	return []common.MiddleWare{
+		thor.LoggingMiddleware,
+		thor.ErrorMiddleware,
+		thor.PanicMiddleWare,
+	}
+}

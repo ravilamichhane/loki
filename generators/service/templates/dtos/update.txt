@@ -1,0 +1,21 @@
+package dtos
+
+import (
+	"app/{{.PackageName}}/entities"
+	"nest/thor/validate"
+)
+
+type Update{{.PackageName}} struct {
+	Name string `json:"name"`
+}
+
+func (u Update{{.PackageName}}) Validate() error {
+	return validate.Check(u)
+}
+
+func (u Update{{.PackageName}}) To{{.PackageName}}({{.PackageName}} *entities.{{.PackageName}}) *entities.{{.PackageName}} {
+	if u.Name != "" {
+		{{.PackageName}}.Name = u.Name
+	}
+	return {{.PackageName}}
+}

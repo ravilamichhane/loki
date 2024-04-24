@@ -1,0 +1,20 @@
+package dtos
+
+import (
+	"{{.RootPath}}/{{.PackageName}}/entities"
+	"nest/thor/validate"
+)
+
+type Create{{.PackageName}} struct {
+	Name string `json:"name" validate:"required"`
+}
+
+func (c Create{{.PackageName}}) Validate() error {
+	return validate.Check(c)
+}
+
+func (c Create{{.PackageName}}) To{{.PackageName}}() *entities.{{.PackageName}} {
+	return &entities.{{.PackageName}}{
+		Name: c.Name,
+	}
+}

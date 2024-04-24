@@ -1,0 +1,54 @@
+package {{.PackageName}}
+
+import (
+	"{{.RootPath}}{{.PackageName}}/entities"
+
+	"github.com/google/uuid"
+
+	"gorm.io/gorm"
+)
+
+type {{.PackageName}}Service interface {
+	FindAll() ([]entities.{{.PackageName}}, error)
+	FindOne(id uuid.UUID) (*entities.{{.PackageName}}, error)
+	Create({{.PackageName}} *entities.{{.PackageName}}) error
+	Update({{.PackageName}} *entities.{{.PackageName}}) error
+	Delete(id uuid.UUID) error
+}
+
+type {{.PackageName}}ServiceDB struct {
+	db *gorm.DB
+}
+
+func New{{.PackageName}}ServiceDB(db *gorm.DB) {{.PackageName}}Service {
+	return &{{.PackageName}}ServiceDB{db: db}
+
+}
+
+func (u *{{.PackageName}}ServiceDB) FindOne(id uuid.UUID) (*entities.{{.PackageName}}, error) {
+	{{.PackageName}} := &entities.{{.PackageName}}{}
+	if err := u.db.First({{.PackageName}}, id).Error; err != nil {
+		return nil, err
+	}
+	return {{.PackageName}}, nil
+}
+
+func (u *{{.PackageName}}ServiceDB) FindAll() ([]entities.{{.PackageName}}, error) {
+	var {{.PackageName}}s []entities.{{.PackageName}}
+	if err := u.db.Find(&{{.PackageName}}s).Error; err != nil {
+		return nil, err
+	}
+	return {{.PackageName}}s, nil
+}
+
+func (u *{{.PackageName}}ServiceDB) Create({{.PackageName}} *entities.{{.PackageName}}) error {
+	return u.db.Create(&{{.PackageName}}).Error
+}
+
+func (u *{{.PackageName}}ServiceDB) Update({{.PackageName}} *entities.{{.PackageName}}) error {
+	return u.db.Save({{.PackageName}}).Error
+}
+
+func (u *{{.PackageName}}ServiceDB) Delete(id uuid.UUID) error {
+	return u.db.Delete(&entities.{{.PackageName}}{}, id).Error
+}
