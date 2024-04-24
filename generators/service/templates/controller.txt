@@ -1,23 +1,23 @@
-package {{.packageName}}
+package {{.PackageName  }}
 
 import (
-	"{{.RootPath}}/{{.packageName}}/dtos"
+	"{{.RootPackage}}/dtos"
 	"log"
 	"nest/common"
 	"nest/thor"
 )
 
-type {{.packageName}}Controller struct {
-	{{.packageName}}Service {{.packageName}}Service
+type {{.PackageName | ToCapitalize }}Controller struct {
+	{{.PackageName | ToCapitalize }}Service {{.PackageName | ToCapitalize }}Service
 }
 
-func New{{.packageName}}Controller({{.packageName}}Service {{.packageName}}Service) *{{.packageName}}Controller {
-	return &{{.packageName}}Controller{
-		{{.packageName}}Service: {{.packageName}}Service,
+func New{{.PackageName | ToCapitalize }}Controller({{.PackageName | ToCapitalize }}Service {{.PackageName | ToCapitalize }}Service) *{{.PackageName | ToCapitalize }}Controller {
+	return &{{.PackageName | ToCapitalize }}Controller{
+		{{.PackageName | ToCapitalize }}Service: {{.PackageName | ToCapitalize }}Service,
 	}
 }
 
-func (u *{{.packageName}}Controller) Routes() []common.Route {
+func (u *{{.PackageName | ToCapitalize }}Controller) Routes() []common.Route {
 	return []common.Route{
 		common.GET("/", u.FindAll),
 		common.GET("/{id}", u.FindOne),
@@ -27,27 +27,27 @@ func (u *{{.packageName}}Controller) Routes() []common.Route {
 	}
 }
 
-func (u *{{.packageName}}Controller) FindAll(ctx common.HttpContext) error {
+func (u *{{.PackageName | ToCapitalize }}Controller) FindAll(ctx common.HttpContext) error {
 	ctx.SetStatusCode(200)
 
-	{{.packageName}}s, err := u.{{.packageName}}Service.FindAll()
+	{{.PackageName }}s, err := u.{{.PackageName | ToCapitalize }}Service.FindAll()
 
 	if err != nil {
 		return err
 	}
 
-	ctx.JSON(200, {{.packageName}}s)
+	ctx.JSON(200, {{.PackageName }}s)
 	return nil
 }
 
-func (u *{{.packageName}}Controller) FindOne(ctx common.HttpContext) error {
+func (u *{{.PackageName | ToCapitalize }}Controller) FindOne(ctx common.HttpContext) error {
 	uid, err := ctx.GetUUIDParam("id")
 
 	if err != nil {
 		return err
 	}
 
-	{{.packageName}}, err := u.{{.packageName}}Service.FindOne(uid)
+	{{.PackageName }}, err := u.{{.PackageName | ToCapitalize }}Service.FindOne(uid)
 
 	if err != nil {
 		return err
@@ -55,69 +55,71 @@ func (u *{{.packageName}}Controller) FindOne(ctx common.HttpContext) error {
 
 	ctx.SetStatusCode(200)
 
-	ctx.JSON(200, {{.packageName}})
+	ctx.JSON(200, {{.PackageName }})
 	return nil
 }
 
-func (u *{{.packageName}}Controller) Create(ctx common.HttpContext) error {
-	var {{.packageName}} dtos.Create{{.packageName}}
+func (u *{{.PackageName | ToCapitalize }}Controller) Create(ctx common.HttpContext) error {
+	var {{.PackageName }} dtos.Create{{.PackageName | ToCapitalize }}
 
-	if err := ctx.Decode(&{{.packageName}}); err != nil {
+	if err := ctx.Decode(&{{.PackageName }}); err != nil {
 		val, ok := err.(thor.FieldErrors)
-		log.Println(val, ok, "Error Decoding {{.packageName}}")
+		log.Println(val, ok, "Error Decoding {{.PackageName | ToCapitalize }}")
 		return err
 	}
 
-	if err := u.{{.packageName}}Service.Create({{.packageName}}.To{{.packageName}}()); err != nil {
+	new{{.PackageName | ToCapitalize }} := {{.PackageName }}.To{{.PackageName | ToCapitalize }}()
+
+	if err := u.{{.PackageName | ToCapitalize }}Service.Create(new{{.PackageName | ToCapitalize }}); err != nil {
 		return err
 	}
 
-	ctx.JSON(200, {{.packageName}})
+	ctx.JSON(200, new{{.PackageName | ToCapitalize }})
 	return nil
 
 }
 
-func (u *{{.packageName}}Controller) Update(ctx common.HttpContext) error {
+func (u *{{.PackageName | ToCapitalize }}Controller) Update(ctx common.HttpContext) error {
 	uid, err := ctx.GetUUIDParam("id")
 
 	if err != nil {
 		return err
 	}
 
-	{{.packageName}}, err := u.{{.packageName}}Service.FindOne(uid)
+	{{.PackageName}}, err := u.{{.PackageName | ToCapitalize }}Service.FindOne(uid)
 
 	if err != nil {
 		return err
 	}
 
-	var update{{.packageName}} dtos.Update{{.packageName}}
+	var update{{.PackageName | ToCapitalize }} dtos.Update{{.PackageName | ToCapitalize }}
 
-	if err := ctx.Decode(&update{{.packageName}}); err != nil {
+	if err := ctx.Decode(&update{{.PackageName | ToCapitalize }}); err != nil {
 		return err
 	}
-	{{.packageName}} = update{{.packageName}}.To{{.packageName}}({{.packageName}})
+	 update{{.PackageName | ToCapitalize }}.Decode({{.PackageName }})
 
-	if err = u.{{.packageName}}Service.Update({{.packageName}}); err != nil {
+	if err = u.{{.PackageName | ToCapitalize }}Service.Update({{.PackageName }}); err != nil {
 		return err
 	}
 
-	ctx.JSON(200, {{.packageName}})
+	ctx.JSON(200, {{.PackageName  }})
 	return nil
 }
 
-func (u *{{.packageName}}Controller) Delete(ctx common.HttpContext) error {
+func (u *{{.PackageName | ToCapitalize }}Controller) Delete(ctx common.HttpContext) error {
 	uid, err := ctx.GetUUIDParam("id")
 
 	if err != nil {
 		return err
 	}
-	err = u.{{.packageName}}Service.Delete(uid)
+	err = u.{{.PackageName | ToCapitalize }}Service.Delete(uid)
 
 	if err == nil {
 		ctx.JSON(200, struct {
 			Message string `json:"message"`
 		}{
-			Message: "{{.packageName}} Deleted",
+			Message: "{{.PackageName | ToCapitalize }} Deleted",
 		})
 	}
 
@@ -125,11 +127,11 @@ func (u *{{.packageName}}Controller) Delete(ctx common.HttpContext) error {
 
 }
 
-func (u *{{.packageName}}Controller) Prefix() string {
-	return "/api/v1/{{.packageName}}"
+func (u *{{.PackageName | ToCapitalize }}Controller) Prefix() string {
+	return "/api/v1/{{.PackageName }}"
 }
 
-func (u *{{.packageName}}Controller) Middlewares() []common.MiddleWare {
+func (u *{{.PackageName | ToCapitalize }}Controller) Middlewares() []common.MiddleWare {
 	return []common.MiddleWare{
 		thor.LoggingMiddleware,
 		thor.ErrorMiddleware,

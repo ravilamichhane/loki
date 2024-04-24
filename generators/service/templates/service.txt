@@ -1,54 +1,54 @@
-package {{.PackageName}}
+package {{.PackageName }}
 
 import (
-	"{{.RootPath}}{{.PackageName}}/entities"
+	"{{.RootPackage}}/entities"
 
 	"github.com/google/uuid"
 
 	"gorm.io/gorm"
 )
 
-type {{.PackageName}}Service interface {
-	FindAll() ([]entities.{{.PackageName}}, error)
-	FindOne(id uuid.UUID) (*entities.{{.PackageName}}, error)
-	Create({{.PackageName}} *entities.{{.PackageName}}) error
-	Update({{.PackageName}} *entities.{{.PackageName}}) error
+type {{.PackageName | ToCapitalize }}Service interface {
+	FindAll() ([]entities.{{.PackageName | ToCapitalize }}, error)
+	FindOne(id uuid.UUID) (*entities.{{.PackageName | ToCapitalize }}, error)
+	Create({{.PackageName | ToCapitalize }} *entities.{{.PackageName | ToCapitalize }}) error
+	Update({{.PackageName | ToCapitalize }} *entities.{{.PackageName | ToCapitalize }}) error
 	Delete(id uuid.UUID) error
 }
 
-type {{.PackageName}}ServiceDB struct {
+type {{.PackageName | ToCapitalize }}ServiceDB struct {
 	db *gorm.DB
 }
 
-func New{{.PackageName}}ServiceDB(db *gorm.DB) {{.PackageName}}Service {
-	return &{{.PackageName}}ServiceDB{db: db}
+func New{{.PackageName | ToCapitalize }}ServiceDB(db *gorm.DB) {{.PackageName | ToCapitalize }}Service {
+	return &{{.PackageName | ToCapitalize }}ServiceDB{db: db}
 
 }
 
-func (u *{{.PackageName}}ServiceDB) FindOne(id uuid.UUID) (*entities.{{.PackageName}}, error) {
-	{{.PackageName}} := &entities.{{.PackageName}}{}
-	if err := u.db.First({{.PackageName}}, id).Error; err != nil {
+func (u *{{.PackageName | ToCapitalize }}ServiceDB) FindOne(id uuid.UUID) (*entities.{{.PackageName | ToCapitalize }}, error) {
+	{{.PackageName }} := &entities.{{.PackageName | ToCapitalize }}{}
+	if err := u.db.First({{.PackageName }}, id).Error; err != nil {
 		return nil, err
 	}
-	return {{.PackageName}}, nil
+	return {{.PackageName }}, nil
 }
 
-func (u *{{.PackageName}}ServiceDB) FindAll() ([]entities.{{.PackageName}}, error) {
-	var {{.PackageName}}s []entities.{{.PackageName}}
-	if err := u.db.Find(&{{.PackageName}}s).Error; err != nil {
+func (u *{{.PackageName | ToCapitalize }}ServiceDB) FindAll() ([]entities.{{.PackageName | ToCapitalize }}, error) {
+	var {{.PackageName }}s []entities.{{.PackageName | ToCapitalize }}
+	if err := u.db.Find(&{{.PackageName }}s).Error; err != nil {
 		return nil, err
 	}
-	return {{.PackageName}}s, nil
+	return {{.PackageName }}s, nil
 }
 
-func (u *{{.PackageName}}ServiceDB) Create({{.PackageName}} *entities.{{.PackageName}}) error {
-	return u.db.Create(&{{.PackageName}}).Error
+func (u *{{.PackageName | ToCapitalize }}ServiceDB) Create({{.PackageName  }} *entities.{{.PackageName | ToCapitalize }}) error {
+	return u.db.Create(&{{.PackageName  }}).Error
 }
 
-func (u *{{.PackageName}}ServiceDB) Update({{.PackageName}} *entities.{{.PackageName}}) error {
-	return u.db.Save({{.PackageName}}).Error
+func (u *{{.PackageName | ToCapitalize }}ServiceDB) Update({{.PackageName  }} *entities.{{.PackageName | ToCapitalize }}) error {
+	return u.db.Save({{.PackageName  }}).Error
 }
 
-func (u *{{.PackageName}}ServiceDB) Delete(id uuid.UUID) error {
-	return u.db.Delete(&entities.{{.PackageName}}{}, id).Error
+func (u *{{.PackageName | ToCapitalize }}ServiceDB) Delete(id uuid.UUID) error {
+	return u.db.Delete(&entities.{{.PackageName | ToCapitalize }}{}, id).Error
 }
