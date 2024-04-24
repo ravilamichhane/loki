@@ -92,7 +92,14 @@ func (c Context) GetWriter() http.ResponseWriter {
 
 func (c Context) GetParam(name string) string {
 	return mux.Vars(c.Request)[name]
+}
 
+func (c Context) GetUUIDParam(name string) (uuid.UUID, error) {
+	id, err := uuid.Parse(mux.Vars(c.Request)[name])
+	if err != nil {
+		return uuid.UUID{}, NewTrustedError(fmt.Errorf("invalid UUID"), http.StatusBadRequest)
+	}
+	return id, nil
 }
 
 func (c Context) GetStatusCode() int {

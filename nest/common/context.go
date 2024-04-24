@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Logger interface {
@@ -34,4 +36,5 @@ type HttpContext interface {
 	GetMethod() string
 	GetPath() string
 	GetParam(key string) string
+	GetUUIDParam(key string) (uuid.UUID, error)
 }

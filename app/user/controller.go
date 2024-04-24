@@ -2,12 +2,9 @@ package user
 
 import (
 	"app/user/dtos"
-	"fmt"
 	"log"
 	"nest/common"
 	"nest/thor"
-
-	"github.com/google/uuid"
 )
 
 type UserController struct {
@@ -44,11 +41,10 @@ func (u *UserController) FindAll(ctx common.HttpContext) error {
 }
 
 func (u *UserController) FindOne(ctx common.HttpContext) error {
-	id := ctx.GetParam("id")
-	uid, err := uuid.FromBytes([]byte(id))
+	uid, err := ctx.GetUUIDParam("id")
 
 	if err != nil {
-		return thor.NewTrustedError(fmt.Errorf("invalid UUID"), 400)
+		return err
 	}
 
 	user, err := u.UserService.FindOne(uid)
@@ -82,11 +78,10 @@ func (u *UserController) Create(ctx common.HttpContext) error {
 }
 
 func (u *UserController) Update(ctx common.HttpContext) error {
-	id := ctx.GetParam("id")
-	uid, err := uuid.FromBytes([]byte(id))
+	uid, err := ctx.GetUUIDParam("id")
 
 	if err != nil {
-		return thor.NewTrustedError(fmt.Errorf("invalid UUID"), 400)
+		return err
 	}
 
 	user, err := u.UserService.FindOne(uid)
@@ -102,18 +97,20 @@ func (u *UserController) Update(ctx common.HttpContext) error {
 	}
 	user = updateUser.ToUser(user)
 
+	if err = u.UserService.Update(user); err != nil {
+		return err
+	}
+
 	ctx.JSON(200, user)
 	return nil
 }
 
 func (u *UserController) Delete(ctx common.HttpContext) error {
-	id := ctx.GetParam("id")
-	uid, err := uuid.FromBytes([]byte(id))
+	uid, err := ctx.GetUUIDParam("id")
 
 	if err != nil {
-		return thor.NewTrustedError(fmt.Errorf("invalid UUID"), 400)
+		return err
 	}
-
 	err = u.UserService.Delete(uid)
 
 	if err == nil {
