@@ -9,11 +9,11 @@ import (
 )
 
 type UserService interface {
-	GetUser(id uuid.UUID) (*entities.User, error)
-	GetUsers() ([]entities.User, error)
-	CreateUser(user *entities.User) error
-	UpdateUser(user *entities.User) error
-	DeleteUser(id uuid.UUID) error
+	FindAll() ([]entities.User, error)
+	FindOne(id uuid.UUID) (*entities.User, error)
+	Create(user *entities.User) error
+	Update(user *entities.User) error
+	Delete(id uuid.UUID) error
 }
 
 type UserServiceDB struct {
@@ -25,7 +25,7 @@ func NewUserServiceDB(db *gorm.DB) UserService {
 
 }
 
-func (u *UserServiceDB) GetUser(id uuid.UUID) (*entities.User, error) {
+func (u *UserServiceDB) FindOne(id uuid.UUID) (*entities.User, error) {
 	user := &entities.User{}
 	if err := u.db.First(user, id).Error; err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (u *UserServiceDB) GetUser(id uuid.UUID) (*entities.User, error) {
 	return user, nil
 }
 
-func (u *UserServiceDB) GetUsers() ([]entities.User, error) {
+func (u *UserServiceDB) FindAll() ([]entities.User, error) {
 	var users []entities.User
 	if err := u.db.Find(&users).Error; err != nil {
 		return nil, err
@@ -41,14 +41,14 @@ func (u *UserServiceDB) GetUsers() ([]entities.User, error) {
 	return users, nil
 }
 
-func (u *UserServiceDB) CreateUser(user *entities.User) error {
+func (u *UserServiceDB) Create(user *entities.User) error {
 	return u.db.Create(&user).Error
 }
 
-func (u *UserServiceDB) UpdateUser(user *entities.User) error {
+func (u *UserServiceDB) Update(user *entities.User) error {
 	return u.db.Save(user).Error
 }
 
-func (u *UserServiceDB) DeleteUser(id uuid.UUID) error {
+func (u *UserServiceDB) Delete(id uuid.UUID) error {
 	return u.db.Delete(&entities.User{}, id).Error
 }

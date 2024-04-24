@@ -1,7 +1,7 @@
 package user
 
 import (
-	"app/dtos"
+	"app/user/dtos"
 	"fmt"
 	"log"
 	"nest/common"
@@ -33,7 +33,7 @@ func (u *UserController) Routes() []common.Route {
 func (u *UserController) FindAll(ctx common.HttpContext) error {
 	ctx.SetStatusCode(200)
 
-	users, err := u.UserService.GetUsers()
+	users, err := u.UserService.FindAll()
 
 	if err != nil {
 		return err
@@ -48,10 +48,10 @@ func (u *UserController) FindOne(ctx common.HttpContext) error {
 	uid, err := uuid.FromBytes([]byte(id))
 
 	if err != nil {
-		return thor.NewTrustedError(fmt.Errorf("Invalid UUID"), 400)
+		return thor.NewTrustedError(fmt.Errorf("invalid UUID"), 400)
 	}
 
-	user, err := u.UserService.GetUser(uid)
+	user, err := u.UserService.FindOne(uid)
 
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (u *UserController) Create(ctx common.HttpContext) error {
 		return err
 	}
 
-	if err := u.UserService.CreateUser(user.ToUser()); err != nil {
+	if err := u.UserService.Create(user.ToUser()); err != nil {
 		return err
 	}
 
@@ -82,13 +82,50 @@ func (u *UserController) Create(ctx common.HttpContext) error {
 }
 
 func (u *UserController) Update(ctx common.HttpContext) error {
-	ctx.Text(200, "User")
+	id := ctx.GetParam("id")
+	uid, err := uuid.FromBytes([]byte(id))
+
+	if err != nil {
+		return thor.NewTrustedError(fmt.Errorf("invalid UUID"), 400)
+	}
+
+	user, err := u.UserService.FindOne(uid)
+
+	if err != nil {
+		return err
+	}
+
+	var updateUser dtos.UpdateUser
+
+	if err := ctx.Decode(&updateUser); err != nil {
+		return err
+	}
+	user = updateUser.ToUser(user)
+
+	ctx.JSON(200, user)
 	return nil
 }
 
 func (u *UserController) Delete(ctx common.HttpContext) error {
-	ctx.Text(200, "User")
-	return nil
+	id := ctx.GetParam("id")
+	uid, err := uuid.FromBytes([]byte(id))
+
+	if err != nil {
+		return thor.NewTrustedError(fmt.Errorf("invalid UUID"), 400)
+	}
+
+	err = u.UserService.Delete(uid)
+
+	if err == nil {
+		ctx.JSON(200, struct {
+			Message string `json:"message"`
+		}{
+			Message: "User Deleted",
+		})
+	}
+
+	return err
+
 }
 
 func (u *UserController) Prefix() string {
