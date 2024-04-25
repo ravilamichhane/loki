@@ -63,8 +63,7 @@ func (u *{{.PackageName | ToCapitalize }}Controller) Create(ctx common.HttpConte
 	var {{.PackageName }} dtos.Create{{.PackageName | ToCapitalize }}
 
 	if err := ctx.Decode(&{{.PackageName }}); err != nil {
-		val, ok := err.(thor.FieldErrors)
-		log.Println(val, ok, "Error Decoding {{.PackageName | ToCapitalize }}")
+		
 		return err
 	}
 

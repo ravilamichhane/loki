@@ -4,4 +4,6 @@ use (
 	./nest
 	./auth
 	./generators
+	./coffee
+	./aichat
 )

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+
+package authorisation;
+
+
+option go_package = "auth/iam/authorisation";
+
+message AuthorisationRequest {
+  string jwt = 1;
+}
+
+message AuthorisationResponse {
+  bool authorised = 1;
+}
+
+
+service AuthorisationService {
+  rpc IsAuthenticated(AuthorisationRequest) returns (AuthorisationResponse);
+}
+
+
+
+
+
+

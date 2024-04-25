@@ -2,7 +2,6 @@ package user
 
 import (
 	"auth/user/dtos"
-	"log"
 	"nest/common"
 	"nest/thor"
 )
@@ -63,8 +62,6 @@ func (u *UserController) Create(ctx common.HttpContext) error {
 	var user dtos.CreateUser
 
 	if err := ctx.Decode(&user); err != nil {
-		val, ok := err.(thor.FieldErrors)
-		log.Println(val, ok, "Error Decoding User")
 		return err
 	}
 

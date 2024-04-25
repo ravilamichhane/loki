@@ -2,7 +2,6 @@ package thor
 
 import (
 	"fmt"
-	"log"
 	"nest/common"
 	"net/http"
 	"runtime/debug"
@@ -16,7 +15,6 @@ func ErrorMiddleware(h common.RouteHandler) common.RouteHandler {
 			switch {
 
 			case IsFieldErrors(err):
-				log.Println("ErrorMiddleware", err)
 				er = ErrorResponse{
 					Error:  "Validation Error",
 					Fields: GetFieldErrors(err).Fields(),
@@ -24,7 +22,6 @@ func ErrorMiddleware(h common.RouteHandler) common.RouteHandler {
 				status = http.StatusBadRequest
 
 			case IsTrustedError(err):
-				log.Println("ErrorMiddleware", err)
 				status = GetTrustedError(err).Status
 				er = ErrorResponse{
 					Error: GetTrustedError(err).Error(),
@@ -78,16 +75,13 @@ func LoggingMiddleware(h common.RouteHandler) common.RouteHandler {
 func PanicMiddleWare(h common.RouteHandler) common.RouteHandler {
 	return func(ctx common.HttpContext) (err error) {
 		defer func() {
-			log.Println("PanicMiddleWare")
 
 			if r := recover(); r != nil {
-				log.Println(r)
 				// trace := debug.Stack()
 				debug.PrintStack()
 				err = fmt.Errorf("PANIC RECOVERED %v", r)
 
 			} else {
-				log.Println("PanicMiddleWare no panic")
 			}
 		}()
 

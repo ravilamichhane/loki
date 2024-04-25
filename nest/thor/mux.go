@@ -4,7 +4,6 @@ import (
 	"context"
 	"expvar"
 	"fmt"
-	"log"
 	"nest/common"
 	"net/http"
 	"net/http/pprof"
@@ -91,8 +90,6 @@ func (t *Thor) AddRouters(routers ...common.ControllerBase) {
 		rmw, isRouterWithMiddleware := router.(routerWithMiddleware)
 		rp, isRouterWithPrefix := router.(routerWithPrefix)
 
-		log.Println(isRouterWithMiddleware, isRouterWithPrefix)
-
 		if isRouterWithMiddlewareAndPrefix {
 
 			newRoutes := []common.Route{}
@@ -112,7 +109,7 @@ func (t *Thor) AddRouters(routers ...common.ControllerBase) {
 			continue
 		}
 
-		if rmw != nil {
+		if isRouterWithMiddleware {
 			newRoutes := []common.Route{}
 
 			for _, route := range router.Routes() {

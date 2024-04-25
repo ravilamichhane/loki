@@ -3,7 +3,6 @@ package service
 import (
 	_ "embed"
 	"generators/generator"
-	"log"
 	"os"
 )
 
@@ -46,23 +45,17 @@ func (s *ServiceGenerator) Generate() {
 
 	if s.RootPackage == "" {
 		s.RootPackage = s.PackageName
-		log.Println(1)
 
 	} else {
 		s.RootPackage = s.RootPackage + "/" + s.PackageName
-		log.Println(2)
 
 	}
 
 	if s.RootPath == "" {
-		log.Println(3)
 		s.RootPath = a + "/" + s.PackageName
 	} else {
-		log.Println(4)
 		s.RootPath = a + "/" + s.RootPath + "/" + s.PackageName
 	}
-
-	log.Println(s.PackageName, s.RootPackage)
 
 	os.Mkdir(s.RootPath, os.ModePerm)
 

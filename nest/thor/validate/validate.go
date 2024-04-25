@@ -2,7 +2,6 @@
 package validate
 
 import (
-	"log"
 	"nest/thor"
 	"reflect"
 	"strings"
@@ -41,8 +40,6 @@ func Check(val any) error {
 		if !ok {
 			return err
 		}
-
-		log.Println("Check", verrors, ok)
 
 		var fields thor.FieldErrors
 		for _, verror := range verrors {
