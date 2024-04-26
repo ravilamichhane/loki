@@ -2,6 +2,7 @@ package dto
 
 import (
 	"auth/user/dtos"
+	"auth/user/entities"
 	"nest/thor/validate"
 )
 
@@ -23,4 +24,11 @@ func (s *SignUpRequest) ToCreateUser() dtos.CreateUser {
 		Email:     s.Email,
 		Password:  s.Password,
 	}
+}
+
+
+type SignUpResponse struct {
+	Token string `json:"token"`
+	RefreshToken string `json:"refresh_token"`
+	User *entities.User `json:"user"`
 }

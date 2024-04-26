@@ -4,6 +4,7 @@ import (
 	"context"
 	"expvar"
 	"fmt"
+	"log"
 	"nest/common"
 	"net/http"
 	"net/http/pprof"
@@ -33,10 +34,23 @@ type ThorConfig struct {
 	Port      string
 	DebugPort string
 	Debug     bool
+	Mws       []common.MiddleWare
 }
 
 func (t *Thor) SignalShutdown() {
 	t.shutdown <- syscall.SIGTERM
+}
+
+func enableCORS(next http.Handler) http.Handler {
+	log.Println("CORS MIDDLEWARE")
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println("CORS MIDDLEWARE")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept")
+		next.ServeHTTP(w, r)
+	})
 }
 
 func NewApp(ctx context.Context, config ThorConfig) *Thor {
@@ -54,6 +68,7 @@ func NewApp(ctx context.Context, config ThorConfig) *Thor {
 	}
 
 	newMux := mux.NewRouter().StrictSlash(true)
+	newMux.Use(enableCORS)
 
 	shutdown := make(chan os.Signal, 1)
 
@@ -65,7 +80,7 @@ func NewApp(ctx context.Context, config ThorConfig) *Thor {
 		port:      config.Port,
 		debugPort: config.DebugPort,
 		debug:     config.Debug,
-		mws:       []common.MiddleWare{},
+		mws:       config.Mws,
 	}
 }
 
@@ -127,6 +142,17 @@ func (t *Thor) AddRouters(routers ...common.ControllerBase) {
 
 func (t *Thor) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
+	log.Println("CORS MIDDLEWARE")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	w.Header().Set("Access-Control-Max-Age", "86400")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	t.mux.ServeHTTP(w, r.WithContext(ctx))
 }
 

@@ -3,7 +3,6 @@ package authentication
 import (
 	"auth/iam/authentication/dto"
 	"auth/user"
-	"auth/user/entities"
 )
 
 type AuthenticationService struct {
@@ -20,8 +19,19 @@ func (u *AuthenticationService) Authenticate(username string, password string) (
 	return true, nil
 }
 
-func (u *AuthenticationService) Register(signUpRequest dto.SignUpRequest) (*entities.User, error) {
+func (u *AuthenticationService) Register(signUpRequest dto.SignUpRequest) (dto.SignUpResponse, error) {
 
-	
-	return nil, nil
+	createUserRequest := signUpRequest.ToCreateUser()
+
+	user := createUserRequest.ToUser()
+
+	if err := u.userService.Create(user); err != nil {
+		return dto.SignUpResponse{}, err
+	}
+
+	return dto.SignUpResponse{
+		Token:        "token",
+		RefreshToken: "refresh",
+		User:         user,
+	}, nil
 }

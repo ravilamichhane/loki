@@ -2,7 +2,9 @@ package authentication
 
 import (
 	"auth/iam/authentication/dto"
+	"log"
 	"nest/common"
+	"nest/thor"
 )
 
 type AuthenticationController struct {
@@ -17,17 +19,17 @@ func NewAuthenticationController(AuthenticationService AuthenticationService) *A
 
 func (u *AuthenticationController) Routes() []common.Route {
 	return []common.Route{
-		common.POST("/login", u.Login),
-		common.POST("/register", u.Register),
+		common.POST("/signin", u.SignIn),
+		common.POST("/signup", u.SignUp),
 	}
 }
 
-func (u *AuthenticationController) Login(ctx common.HttpContext) error {
+func (u *AuthenticationController) SignIn(ctx common.HttpContext) error {
 
 	return nil
 }
 
-func (u *AuthenticationController) Register(ctx common.HttpContext) error {
+func (u *AuthenticationController) SignUp(ctx common.HttpContext) error {
 	var signUpRequest dto.SignUpRequest
 
 	if err := ctx.Decode(&signUpRequest); err != nil {
@@ -36,11 +38,13 @@ func (u *AuthenticationController) Register(ctx common.HttpContext) error {
 
 	user, err := u.AuthenticationService.Register(signUpRequest)
 
+	log.Println("User: ", user)
+
 	if err != nil {
 		return err
 	}
 
-	ctx.JSON(200, user)
+	ctx.JSON(201, common.NewSuccessResponse("User created successfully", user))
 
 	return nil
 }
@@ -48,4 +52,13 @@ func (u *AuthenticationController) Register(ctx common.HttpContext) error {
 func (u *AuthenticationController) Prefix() string {
 
 	return "/api/v1/auth"
+}
+
+func (u *AuthenticationController) Middlewares() []common.MiddleWare {
+	return []common.MiddleWare{
+		thor.LoggingMiddleware,
+		thor.ErrorMiddleware,
+		thor.PanicMiddleWare,
+		thor.CORSMiddleWare,
+	}
 }

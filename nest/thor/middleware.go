@@ -2,22 +2,26 @@ package thor
 
 import (
 	"fmt"
+	"log"
 	"nest/common"
 	"net/http"
 	"runtime/debug"
 )
 
 func ErrorMiddleware(h common.RouteHandler) common.RouteHandler {
+
 	return func(ctx common.HttpContext) error {
 		if err := h(ctx); err != nil {
+			log.Println("CORS MIDDLEWARE")
+
 			var er ErrorResponse
 			var status int
 			switch {
 
 			case IsFieldErrors(err):
 				er = ErrorResponse{
-					Error:  "Validation Error",
-					Fields: GetFieldErrors(err).Fields(),
+					Error:  "Validation Errors",
+					Errors: GetFieldErrors(err).Fields(),
 				}
 				status = http.StatusBadRequest
 
@@ -86,5 +90,14 @@ func PanicMiddleWare(h common.RouteHandler) common.RouteHandler {
 		}()
 
 		return h(ctx)
+	}
+}
+
+func CORSMiddleWare(handler common.RouteHandler) common.RouteHandler {
+	return func(ctx common.HttpContext) error {
+
+		err := handler(ctx)
+
+		return err
 	}
 }

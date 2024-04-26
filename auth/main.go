@@ -56,7 +56,14 @@ func main() {
 	ctx := context.Background()
 
 	c := core.NewNestFactory(thor.NewApp(ctx, thor.ThorConfig{
+
 		Logger: logger,
+		Mws: []common.MiddleWare{
+			thor.LoggingMiddleware,
+			thor.ErrorMiddleware,
+			thor.PanicMiddleWare,
+			thor.CORSMiddleWare,
+		},
 	})).Create(appModule)
 
 	go func() {

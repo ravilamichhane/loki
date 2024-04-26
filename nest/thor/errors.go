@@ -7,7 +7,7 @@ import (
 
 type ErrorResponse struct {
 	Error  string            `json:"error"`
-	Fields map[string]string `json:"fields,omitempty"`
+	Errors map[string]string `json:"errors,omitempty"`
 }
 
 // trustedError is an error that is trusted to be returned to the client

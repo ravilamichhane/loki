@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as DashboardLayoutImport } from './routes/_dashboard/_layout'
 import { Route as AuthLayoutImport } from './routes/_auth/_layout'
 import { Route as AppLayoutImport } from './routes/_app/_layout'
 import { Route as AuthLayoutSignupImport } from './routes/_auth/_layout/signup'
@@ -21,9 +22,17 @@ import { Route as AuthLayoutSigninImport } from './routes/_auth/_layout/signin'
 // Create Virtual Routes
 
 const AppLayoutIndexLazyImport = createFileRoute('/_app/_layout/')()
-const AppLayoutAboutLazyImport = createFileRoute('/_app/_layout/about')()
+const DashboardLayoutDashboardLazyImport = createFileRoute(
+  '/_dashboard/_layout/dashboard',
+)()
+const AppLayoutPricingLazyImport = createFileRoute('/_app/_layout/pricing')()
 
 // Create/Update Routes
+
+const DashboardLayoutRoute = DashboardLayoutImport.update({
+  id: '/_dashboard/_layout',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AuthLayoutRoute = AuthLayoutImport.update({
   id: '/_auth/_layout',
@@ -42,11 +51,19 @@ const AppLayoutIndexLazyRoute = AppLayoutIndexLazyImport.update({
   import('./routes/_app/_layout/index.lazy').then((d) => d.Route),
 )
 
-const AppLayoutAboutLazyRoute = AppLayoutAboutLazyImport.update({
-  path: '/about',
+const DashboardLayoutDashboardLazyRoute =
+  DashboardLayoutDashboardLazyImport.update({
+    path: '/dashboard',
+    getParentRoute: () => DashboardLayoutRoute,
+  } as any).lazy(() =>
+    import('./routes/_dashboard/_layout/dashboard.lazy').then((d) => d.Route),
+  )
+
+const AppLayoutPricingLazyRoute = AppLayoutPricingLazyImport.update({
+  path: '/pricing',
   getParentRoute: () => AppLayoutRoute,
 } as any).lazy(() =>
-  import('./routes/_app/_layout/about.lazy').then((d) => d.Route),
+  import('./routes/_app/_layout/pricing.lazy').then((d) => d.Route),
 )
 
 const AuthLayoutSignupRoute = AuthLayoutSignupImport.update({
@@ -71,6 +88,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutImport
       parentRoute: typeof rootRoute
     }
+    '/_dashboard/_layout': {
+      preLoaderRoute: typeof DashboardLayoutImport
+      parentRoute: typeof rootRoute
+    }
     '/_auth/_layout/signin': {
       preLoaderRoute: typeof AuthLayoutSigninImport
       parentRoute: typeof AuthLayoutImport
@@ -79,9 +100,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLayoutSignupImport
       parentRoute: typeof AuthLayoutImport
     }
-    '/_app/_layout/about': {
-      preLoaderRoute: typeof AppLayoutAboutLazyImport
+    '/_app/_layout/pricing': {
+      preLoaderRoute: typeof AppLayoutPricingLazyImport
       parentRoute: typeof AppLayoutImport
+    }
+    '/_dashboard/_layout/dashboard': {
+      preLoaderRoute: typeof DashboardLayoutDashboardLazyImport
+      parentRoute: typeof DashboardLayoutImport
     }
     '/_app/_layout/': {
       preLoaderRoute: typeof AppLayoutIndexLazyImport
@@ -94,10 +119,11 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   AppLayoutRoute.addChildren([
-    AppLayoutAboutLazyRoute,
+    AppLayoutPricingLazyRoute,
     AppLayoutIndexLazyRoute,
   ]),
   AuthLayoutRoute.addChildren([AuthLayoutSigninRoute, AuthLayoutSignupRoute]),
+  DashboardLayoutRoute.addChildren([DashboardLayoutDashboardLazyRoute]),
 ])
 
 /* prettier-ignore-end */
