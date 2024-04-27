@@ -11,6 +11,7 @@ import (
 type UserService interface {
 	FindAll() ([]entities.User, error)
 	FindOne(id uuid.UUID) (*entities.User, error)
+	FindOneByEmail(email string) (*entities.User, error)
 	Create(User *entities.User) error
 	Update(User *entities.User) error
 	Delete(id uuid.UUID) error
@@ -23,6 +24,14 @@ type UserServiceDB struct {
 func NewUserServiceDB(db *gorm.DB) UserService {
 	return &UserServiceDB{db: db}
 
+}
+
+func (u *UserServiceDB) FindOneByEmail(email string) (*entities.User, error) {
+	user := &entities.User{}
+	if err := u.db.Where("email = ?", email).First(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (u *UserServiceDB) FindOne(id uuid.UUID) (*entities.User, error) {

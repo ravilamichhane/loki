@@ -1,15 +1,13 @@
 package entities
 
 import (
-	"github.com/google/uuid"
-	"gorm.io/gorm"
+	"nest/common"
 )
 
 type User struct {
-	gorm.Model
-	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
-	FirstName string    `gorm:"type:varchar(100);not null"`
-	LastName  string    `gorm:"type:varchar(100);not null"`
-	Email     string    `gorm:"type:varchar(100);unique;not null"`
-	Password  string    `gorm:"type:varchar(100);not null"`
+	common.Model
+	FirstName string `gorm:"type:varchar(100);not null" json:"first_name"`
+	LastName  string `gorm:"type:varchar(100);not null" json:"last_name"`
+	Email     string `gorm:"type:varchar(100);unique;not null" json:"email"`
+	Password  string `gorm:"type:varchar(100);not null" json:"-"`
 }

@@ -5,5 +5,4 @@ use (
 	./auth
 	./generators
 	./coffee
-	./aichat
 )

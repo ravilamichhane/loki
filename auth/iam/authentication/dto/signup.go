@@ -26,9 +26,9 @@ func (s *SignUpRequest) ToCreateUser() dtos.CreateUser {
 	}
 }
 
-
 type SignUpResponse struct {
-	Token string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
-	User *entities.User `json:"user"`
+	Token        string         `json:"token"`
+	RefreshToken string         `json:"refresh_token"`
+	User         *entities.User `json:"user"`
+	HasSetup     bool           `json:"has_setup"`
 }
