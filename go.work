@@ -4,5 +4,4 @@ use (
 	./nest
 	./auth
 	./generators
-	./coffee
 )
