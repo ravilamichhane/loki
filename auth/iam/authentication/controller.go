@@ -3,8 +3,8 @@ package authentication
 import (
 	"auth/iam/authentication/dto"
 	"log"
-	"nest/common"
-	"nest/thor"
+	"loki/common"
+	"loki/thor"
 )
 
 type AuthenticationController struct {

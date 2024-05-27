@@ -1,10 +1,10 @@
 package core
 
 import (
-	"nest/common"
+	"loki/common"
 )
 
-type Nest struct {
+type loki struct {
 	module *common.Module
 	mux    Mux
 }
@@ -15,24 +15,24 @@ type Mux interface {
 	AddRouters(routers ...common.ControllerBase)
 }
 
-type NestFactory struct {
-	nest *Nest
+type lokiFactory struct {
+	loki *loki
 }
 
-func NewNestFactory(mux Mux) *NestFactory {
-	return &NestFactory{
-		nest: &Nest{
+func NewlokiFactory(mux Mux) *lokiFactory {
+	return &lokiFactory{
+		loki: &loki{
 			mux: mux,
 		},
 	}
 }
 
-func (n *NestFactory) Create(module *common.Module) *Nest {
-	n.nest.module = module
-	return n.nest
+func (n *lokiFactory) Create(module *common.Module) *loki {
+	n.loki.module = module
+	return n.loki
 }
 
-func (n *Nest) Listen(port string) {
+func (n *loki) Listen(port string) {
 	if len(n.module.Controllers) > 0 {
 
 		n.mux.AddRouters(n.module.Controllers...)

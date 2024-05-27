@@ -2,7 +2,7 @@ package dtos
 
 import (
 	"{{.RootPackage}}/entities"
-	"nest/thor/validate"
+	"loki/thor/validate"
 )
 
 type Update{{.PackageName | ToCapitalize }} struct {

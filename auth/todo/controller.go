@@ -2,8 +2,8 @@ package todo
 
 import (
 	"auth/todo/dtos"
-	"nest/common"
-	"nest/thor"
+	"loki/common"
+	"loki/thor"
 )
 
 type TodoController struct {
@@ -62,7 +62,7 @@ func (u *TodoController) Create(ctx common.HttpContext) error {
 	var todo dtos.CreateTodo
 
 	if err := ctx.Decode(&todo); err != nil {
-		
+
 		return err
 	}
 
@@ -95,7 +95,7 @@ func (u *TodoController) Update(ctx common.HttpContext) error {
 	if err := ctx.Decode(&updateTodo); err != nil {
 		return err
 	}
-	 updateTodo.Decode(todo)
+	updateTodo.Decode(todo)
 
 	if err = u.TodoService.Update(todo); err != nil {
 		return err

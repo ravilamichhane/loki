@@ -2,7 +2,7 @@ package dtos
 
 import (
 	"auth/user/entities"
-	"nest/thor/validate"
+	"loki/thor/validate"
 )
 
 type CreateUser struct {

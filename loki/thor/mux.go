@@ -5,7 +5,7 @@ import (
 	"expvar"
 	"fmt"
 	"log"
-	"nest/common"
+	"loki/common"
 	"net/http"
 	"net/http/pprof"
 	"os"

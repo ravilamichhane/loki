@@ -2,7 +2,7 @@ package dtos
 
 import (
 	"auth/user/entities"
-	"nest/thor/validate"
+	"loki/thor/validate"
 )
 
 type UpdateUser struct {
@@ -22,7 +22,7 @@ func (u UpdateUser) Decode(user *entities.User) {
 	if u.LastName != "" {
 		user.LastName = u.LastName
 	}
-	
+
 	if u.Email != "" {
 		user.Email = u.Email
 	}

@@ -3,8 +3,8 @@ package {{.PackageName  }}
 import (
 	"{{.RootPackage}}/dtos"
 	"log"
-	"nest/common"
-	"nest/thor"
+	"loki/common"
+	"loki/thor"
 )
 
 type {{.PackageName | ToCapitalize }}Controller struct {

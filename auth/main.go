@@ -6,10 +6,10 @@ import (
 	"auth/user"
 	"context"
 	"log"
-	"nest/common"
-	"nest/core"
-	"nest/logger"
-	"nest/thor"
+	"loki/common"
+	"loki/core"
+	"loki/logger"
+	"loki/thor"
 	"net"
 	"os"
 
@@ -55,7 +55,7 @@ func main() {
 
 	ctx := context.Background()
 
-	c := core.NewNestFactory(thor.NewApp(ctx, thor.ThorConfig{
+	c := core.NewlokiFactory(thor.NewApp(ctx, thor.ThorConfig{
 
 		Logger: logger,
 		Mws: []common.MiddleWare{

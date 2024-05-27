@@ -2,7 +2,7 @@ package dtos
 
 import (
 	"auth/todo/entities"
-	"nest/thor/validate"
+	"loki/thor/validate"
 )
 
 type CreateTodo struct {

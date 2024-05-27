@@ -2,7 +2,7 @@ package main
 
 import (
 	user "auth/user/entities"
-	"nest/thor"
+	"loki/thor"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package dto
 import (
 	"auth/user/dtos"
 	"auth/user/entities"
-	"nest/thor/validate"
+	"loki/thor/validate"
 )
 
 type SignUpRequest struct {

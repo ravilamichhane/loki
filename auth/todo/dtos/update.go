@@ -2,7 +2,7 @@ package dtos
 
 import (
 	"auth/todo/entities"
-	"nest/thor/validate"
+	"loki/thor/validate"
 )
 
 type UpdateTodo struct {
@@ -13,7 +13,7 @@ func (u UpdateTodo) Validate() error {
 	return validate.Check(u)
 }
 
-func (u UpdateTodo) Decode(todo *entities.Todo)  {
+func (u UpdateTodo) Decode(todo *entities.Todo) {
 	if u.Name != "" {
 		todo.Name = u.Name
 	}

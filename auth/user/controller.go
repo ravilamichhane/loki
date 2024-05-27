@@ -2,8 +2,8 @@ package user
 
 import (
 	"auth/user/dtos"
-	"nest/common"
-	"nest/thor"
+	"loki/common"
+	"loki/thor"
 )
 
 type UserController struct {

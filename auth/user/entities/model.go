@@ -1,7 +1,7 @@
 package entities
 
 import (
-	"nest/common"
+	"loki/common"
 )
 
 type User struct {

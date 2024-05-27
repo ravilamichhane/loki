@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"nest/common"
+	"loki/common"
 	"net/http"
 	"time"
 

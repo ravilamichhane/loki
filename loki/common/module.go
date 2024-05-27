@@ -8,7 +8,7 @@ type ModuleConfig struct {
 	Controllers []ControllerBase
 }
 
-func NewNestModule(config ModuleConfig) *Module {
+func NewlokiModule(config ModuleConfig) *Module {
 	return &Module{
 		Controllers: config.Controllers,
 	}

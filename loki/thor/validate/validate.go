@@ -2,7 +2,7 @@
 package validate
 
 import (
-	"nest/thor"
+	"loki/thor"
 	"reflect"
 	"strings"
 

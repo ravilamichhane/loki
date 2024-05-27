@@ -10,7 +10,7 @@ auth-migrate:
 tidy:
 	@echo "Tidying up go modules..."
 	@cd auth && go mod tidy
-	@cd nest && go mod tidy
+	@cd loki && go mod tidy
 
 generator-compile : 
 	@echo "Generating CODE GENERATOR"

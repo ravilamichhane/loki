@@ -2,7 +2,7 @@ package authentication
 
 import (
 	"errors"
-	"nest/thor"
+	"loki/thor"
 
 	"time"
 
